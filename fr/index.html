@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130693761-3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-130693761-3');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" , charset="UTF-8">
+    <meta property="og:title" content="Coronavirus statistics" />
+    <meta property="article:author" content="Yrieix Leprince" />
+    <meta property="og:description" content="Explore coronavirus evolution spreading country by country." />
+    <meta name="Description" content="Explore coronavirus evolution spreading country by country.">
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="yleprince.github.io" />
+    <meta property="og:image"
+        content="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/facebook/230/face-with-medical-mask_1f637.png" />
+
+    <link rel="stylesheet" href="../corona.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="icon"
+        href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/facebook/230/face-with-medical-mask_1f637.png">
+    <title>Coronavirus</title>
+</head>
+
+<body>
+    <h1>Statistiques Coronavirus</h1>
+    <p>Cette page affiche des données à jour du <a href="https://fr.wikipedia.org/wiki/Coronavirus">covid-19</a>.</p>
+    <div id="userMessage"></div>
+    <br>
+    <div class="centerContainer">
+        <button class="button_corona clickable" id="popButton">👥 population %</button>
+    </div>
+    <br>
+
+    <h2>🌍 Échelle mondiale</h2>
+    <ul>
+        <li>Nombre total de cas : <span class="number" id="total_cases">...</span></li>
+        <li>Nombre total de cas résolu : <span class="number" id="total_recovered">...</span></li>
+        <li>Nombre total de cas non résolu : <span class="number" id="total_unresolved">...</span></li>
+        <li>Nombre total de décès : <span class="number" id="total_deaths">...</span></li>
+    </ul>
+    <ul>
+        <li>Nombre de cas détecté aujourd'hui : <span class="number" id="total_new_cases_today">...</span></li>
+        <li>Nombre de décès aujourd'hui : <span class="number" id="total_new_deaths_today">...</span></li>
+    </ul>
+    <ul>
+        <li>Nombre total de cas actif : <span class="number" id="total_active_cases">...</span></li>
+        <li>Nombre total de cas grave : <span class="number" id="total_serious_cases">...</span></li>
+        <li>Nombre de pays concernés: <span class="number" id="total_affected_countries">...</span></li>
+    </ul>
+
+    <hr>
+
+    <h2>😷 Évolution par pays</h2>
+
+    <div id="countries">
+        <select class="clickable corona" id="countrySelector"></select>
+        <p class="small grey" id="helpDel"></p>
+        <div id="countrySelected"></div>
+    </div>
+
+    <br>
+    <div class="centerContainer">
+        <button class="button_corona clickable" id="logButton">📉 Échelle logarithmique</button>
+    </div>
+    <br>
+
+    <div class="controls">
+        <select class="clickable corona" name="metricSelector" id="metricSelector">
+            <option value="total_cases" selected>Nombre de cas total</option>
+            <option value="total_deaths">Nombre total de décès</option>
+            <option value="total_recoveries">Nombre total de cas résolu</option>
+            <option value="new_daily_cases">Nombre de cas détecté aujourd'hui</option>
+            <option value="new_daily_deaths">Nombre de décès aujourd'hui</option>
+        </select>
+        <label for="metricSelector">👈</label>
+    </div>
+    <div id="containerPlot">
+        <div id="plot"></div>
+    </div>
+
+    <hr>
+
+    <h2>📍 Statistiques par pays</h2>
+
+    <div id="container">
+        <div id="map"></div>
+    </div>
+    <p class="small grey">Sélectionnez un pays sur la carte 👆 pour afficher les données ci-dessous 👇</p>
+    <h3 id="country"></h3><span id="countryPopulation"></span>
+    <ul>
+        <li>Nombre total de cas : <span id="c_total_cases"></span></li>
+        <li>Nombre total de cas résolu : <span id="c_total_recovered"></span></li>
+        <li>Nombre total de cas non résolu : <span id="c_total_unresolved"></span></li>
+        <li>Nombre total de décès : <span id="c_total_deaths"></span></li>
+    </ul>
+    <ul>
+        <li>Nombre de cas détecté aujourd'hui : <span id="c_total_new_cases_today"></span></li>
+        <li>Nombre de décès aujourd'hui : <span id="c_total_new_deaths_today"></span></li>
+    </ul>
+    <ul>
+        <li>Nombre total de cas actif : <span id="c_total_active_cases"></span></li>
+        <li>Nombre total de cas grave : <span id="c_total_serious_cases"></span></li>
+    </ul>
+
+    <hr>
+    <br>
+    <div class="centerContainer">
+        <button class="button_corona clickable" id="linkButton"></button>
+    </div>
+    <br>
+
+    <hr>
+    <p lang="en" class="small">English version <a href="/corona/">here</a>.</p>
+    <p class="small grey">Cette page a été conçue pour être inclusive autant que possible. Elle est supportée sur la
+        plupart des smartphone/ordinateur, pour les personnes atteintes de daltonisme.</p>
+    <p class="small">Revenir à la page d'<a href="/">accueil</a>, ou retrouvez moi sur <a
+            href="https://www.linkedin.com/in/yrieixleprince/">LinkedIn</a> 👋</p>
+
+    <p class="small grey">Source des données : <a href="https://thevirustracker.com/">thevirustracker.com</a> - <span
+            id="source"></span></p>
+    <script>
+        const lang = 'fr';
+        let getCountry;
+        let getFlag;
+        let getName;
+        let getPop;
+        let SOURCEDOWN = false;
+        const githubData = 'https://raw.githubusercontent.com/yleprince/data/master/coronavirus/'
+        const API = () => SOURCEDOWN ? `${githubData}virustrackerexports/latest/`
+            : 'https://api.thevirustracker.com/free-api?';
+    </script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src='../src/link.js'></script>
+    <script type="text/javascript" src='../src/worldwide.js'></script>
+    <script type="text/javascript" src='../src/evolution.js'></script>
+    <script type="text/javascript" src='../src/map.js'></script>
+    <script type="text/javascript" src='../src/app.js'></script>
+</body>
+
+</html>
